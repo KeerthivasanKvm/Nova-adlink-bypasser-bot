@@ -1,0 +1,75 @@
+services:
+  # Flask Web Service
+  - type: web
+    name: link-bypasser-web
+    env: python
+    region: oregon
+    plan: free
+    buildCommand: |
+      pip install --upgrade pip
+      pip install -r requirements.txt
+      playwright install chromium
+    startCommand: gunicorn app:app --bind 0.0.0.0:$PORT --workers 4 --timeout 120
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.7
+      - key: BOT_TOKEN
+        sync: false
+      - key: API_ID
+        sync: false
+      - key: API_HASH
+        sync: false
+      - key: FIREBASE_PROJECT_ID
+        sync: false
+      - key: FIREBASE_CREDENTIALS
+        value: firebase-credentials.json
+      - key: OWNER_ID
+        sync: false
+      - key: ADMIN_IDS
+        sync: false
+      - key: WEBHOOK_URL
+        sync: false
+      - key: FLASK_SECRET_KEY
+        generateValue: true
+      - key: WEBHOOK_MODE
+        value: true
+      - key: FORCE_SUB_CHANNEL
+        sync: false
+      - key: FORCE_SUB_GROUP
+        sync: false
+    healthCheckPath: /health
+    
+  # Background Worker (Optional - for polling mode)
+  - type: worker
+    name: link-bypasser-worker
+    env: python
+    region: oregon
+    plan: free
+    buildCommand: |
+      pip install --upgrade pip
+      pip install -r requirements.txt
+      playwright install chromium
+    startCommand: python bot.py
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.7
+      - key: BOT_TOKEN
+        sync: false
+      - key: API_ID
+        sync: false
+      - key: API_HASH
+        sync: false
+      - key: FIREBASE_PROJECT_ID
+        sync: false
+      - key: FIREBASE_CREDENTIALS
+        value: firebase-credentials.json
+      - key: OWNER_ID
+        sync: false
+      - key: ADMIN_IDS
+        sync: false
+      - key: WEBHOOK_MODE
+        value: false
+      - key: FORCE_SUB_CHANNEL
+        sync: false
+      - key: FORCE_SUB_GROUP
+        sync: false

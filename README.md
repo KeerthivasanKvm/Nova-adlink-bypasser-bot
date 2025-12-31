@@ -36,8 +36,12 @@ A powerful, professional Telegram bot that bypasses ad links with 10 advanced me
 - **Rate Limiting** - Customizable limits
 - **Referral Toggle** - Enable/disable referral system
 
-### 🔧 Technical Features
-- **MongoDB Caching** - Smart link caching (bypass once, use everywhere)
+### **🤖 AI Learning System**
+- **Google Gemini Integration** - FREE AI-powered bypass learning
+- **Self-Improving** - Bot learns from every bypass attempt
+- **Pattern Recognition** - Automatically identifies protection types
+- **Custom Code Generation** - AI creates bypass strategies
+- **Community Learning** - All users benefit from learned patterns
 - **Dual Mode** - Both Webhook & Polling support
 - **Flask Web Interface** - API endpoints & health checks
 - **Error Reporting** - Users can report broken links (sent to admin PM)
@@ -84,6 +88,7 @@ A powerful, professional Telegram bot that bypasses ad links with 10 advanced me
 - Firebase project with Firestore (free tier works!)
 - Telegram Bot Token from [@BotFather](https://t.me/botfather)
 - API ID & Hash from [my.telegram.org](https://my.telegram.org)
+- **Google Gemini API Key** (FREE) from [Google AI Studio](https://makersuite.google.com/app/apikey)
 
 ### Local Setup
 
@@ -188,6 +193,7 @@ WEBHOOK_URL=https://your-app.onrender.com
 | `API_HASH` | Telegram API Hash | ✅ | - |
 | `FIREBASE_CREDENTIALS` | Path to Firebase JSON | ✅ | firebase-credentials.json |
 | `FIREBASE_PROJECT_ID` | Firebase project ID | ✅ | - |
+| `GEMINI_API_KEY` | Google Gemini API key (FREE) | ✅ | - |
 | `OWNER_ID` | Your Telegram user ID | ✅ | - |
 | `ADMIN_IDS` | Comma-separated admin IDs | ❌ | - |
 | `WEBHOOK_MODE` | Enable webhook mode | ❌ | false |

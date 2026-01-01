@@ -271,6 +271,7 @@ __all__ = [
     'time_ago',
     'generate_token',
     'generate_reset_key',
+    'generate_referral_code'
     'parse_duration',
     'format_duration',
     'sanitize_filename',

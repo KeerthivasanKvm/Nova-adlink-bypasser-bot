@@ -5,7 +5,7 @@
 # =====================================================
 
 # Core Bot Framework
-python-telegram-bot==20.8
+python-telegram-bot==21.10
 
 # Web Framework
 Flask==3.0.3

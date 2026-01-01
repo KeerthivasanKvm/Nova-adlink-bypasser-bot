@@ -26,6 +26,7 @@ def time_ago(date):
 
 from .helpers import (
     generate_token,
+    generate_reset_key,
     generate_referral_code,
     parse_duration,
     format_duration,
@@ -39,6 +40,7 @@ from .decorators import admin_only, group_only, rate_limit, log_action
 
 __all__ = [
     'generate_token',
+    'generate_reset_key',
     'generate_referral_code',
     'parse_duration',
     'format_duration',

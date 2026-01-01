@@ -1,11 +1,12 @@
 """
-Bypass Command Handlers
+Bypass Command Handlers - FIXED VERSION
 Handle link bypassing operations
 """
 
 import logging
 from telegram import Update
 from telegram.ext import ContextTypes
+import html
 
 from config import Config
 from database import db
@@ -16,6 +17,15 @@ from templates.messages import Messages as MSG
 from utils import is_valid_url
 
 logger = logging.getLogger(__name__)
+
+
+def escape_markdown(text: str) -> str:
+    """Escape special characters for Markdown"""
+    # Escape problematic characters
+    escape_chars = ['_', '*', '[', ']', '(', ')', '~', '`', '>', '#', '+', '-', '=', '|', '{', '}', '.', '!']
+    for char in escape_chars:
+        text = text.replace(char, '\\' + char)
+    return text
 
 
 async def bypass_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -159,7 +169,10 @@ async def _process_bypass(update: Update, context: ContextTypes.DEFAULT_TYPE, ur
             
         else:
             # Bypass failed
-            error_reason = result.get('error', 'Unknown error')
+            # FIXED: Escape error message to prevent parse errors
+            error_reason = str(result.get('error', 'Unknown error'))
+            # Remove any markdown characters that could break formatting
+            error_reason = error_reason.replace('*', '').replace('_', '').replace('`', '')[:100]
             
             fail_message = (
                 f"❌ **Bypass Failed**\n\n"
@@ -171,9 +184,9 @@ async def _process_bypass(update: Update, context: ContextTypes.DEFAULT_TYPE, ur
                 f"• Invalid or expired link\n\n"
                 f"**What you can do:**\n"
                 f"• Try again in a few moments\n"
-                f"• Use /report {url[:30]}... to report the issue\n"
+                f"• Use /report to report the issue\n"
                 f"• Check if the link is correct\n\n"
-                f"**Error:** {error_reason}"
+                f"Error details: {error_reason}"
             )
             
             await processing_msg.edit_text(
@@ -187,16 +200,25 @@ async def _process_bypass(update: Update, context: ContextTypes.DEFAULT_TYPE, ur
         logger.error(f"❌ Bypass processing error for user {user_data['user_id']}: {e}", exc_info=True)
         
         try:
+            # FIXED: Remove parse_mode entirely for error messages with unpredictable content
+            error_msg = str(e)[:100]
+            # Clean the error message
+            error_msg = error_msg.replace('*', '').replace('_', '').replace('`', '')
+            
             await processing_msg.edit_text(
-                "❌ **An error occurred**\n\n"
+                "❌ An error occurred\n\n"
                 "Please try again later or contact support.\n\n"
-                f"Error: {str(e)[:100]}",
-                parse_mode='Markdown'
+                f"Error: {error_msg}"
+                # NO parse_mode to avoid formatting issues
             )
-        except Exception:
+        except Exception as edit_error:
             # If edit fails, send new message
-            await update.message.reply_text(
-                "❌ **An error occurred**\n\n"
-                "Please try again later.",
-                parse_mode='Markdown'
-      )
+            logger.error(f"Failed to edit message: {edit_error}")
+            try:
+                await update.message.reply_text(
+                    "❌ An error occurred\n\n"
+                    "Please try again later or contact support."
+                    # NO parse_mode
+                )
+            except Exception as send_error:
+                logger.error(f"Failed to send error message: {send_error}")
